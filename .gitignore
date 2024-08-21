@@ -1,0 +1,35 @@
+# Python игнорирование
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.env
+*.env.*
+
+# Игнорирование логов и отладочных файлов
+*.log
+*.sql
+*.sqlite3
+*.pot
+
+# Игнорирование зависимостей
+venv/
+.env/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Игнорирование IDE и редакторов
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*~
+
+# Игнорирование файлов, связанных с работой системы
+.DS_Store
+Thumbs.db
+
+# Игнорирование файлов конфигурации баз данных
+*.db

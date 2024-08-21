@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Создать/Редактировать заметку</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .delete-note {
+            position: absolute;
+            top: -15px; /* Расстояние от верхнего края контейнера */
+            right: 10px; /* Расстояние от правого края контейнера */
+            width: 30px;
+            height: 30px;
+            background: url("{% static 'icons/close_button.png' %}") no-repeat center center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+            background-color: transparent;
+            outline: none;
+            transition: transform 0.2s ease; /* Плавный переход трансформации */
+        }
+
+        .delete-note:hover {
+            transform: scale(1.1); /* Увеличение кнопки при наведении */
+        }
+
+        .delete-note:active {
+            transform: scale(0.9); /* Уменьшение кнопки при нажатии */
+        }
+        .back-to-list {
+            position: absolute;
+            top: -15px;
+            left: 10px;
+            width: 30px; /* Установите ширину кнопки */
+            height: 30px; /* Установите высоту кнопки */
+            background: url("{% static 'icons/back_icon.png' %}") no-repeat center center;
+            background-size: contain; /* Убедитесь, что иконка масштабируется, чтобы поместиться в кнопку */
+            border: none; /* Уберите стандартные границы кнопки */
+            cursor: pointer; /* Измените курсор при наведении */
+            background-color: transparent; /* Прозрачный фон кнопки */
+            outline: none; /* Убирает стандартный контур кнопки */
+        }
+        .back-to-list:hover {
+            transform: scale(1.1); /* Увеличение кнопки при наведении */
+        }
+
+        .back-to-list:active {
+            transform: scale(0.9); /* Уменьшение кнопки при нажатии */
+        }
+        .note-content {
+            font-size: 14px;
+            color: #555;
+            padding: 25px;
+            width: 80%;
+            height: 300px;
+            border: none;
+            resize: none;
+            outline: none;
+            background-color: #fff;
+        }
+        button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <button class="back-to-list" onclick="saveNote()"></button>
+    <button class="delete-note" onclick="cancelNote()"></button>
+    <textarea class="note-content" placeholder="Начните писать...">{{ note.content }}</textarea>
+</div>
+
+<script>
+    function saveNote() {
+        const content = document.querySelector('.note-content').value.trim(); // Убираем пробелы по краям
+        const title = content.split(' ')[0] || "Untitled"; // Первое слово как заголовок
+
+        if (content !== "") { // Проверяем, чтобы контент не был пустым
+            fetch("{% url 'note_create' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ title: title, content: content })
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = "{% url 'note_list' %}";
+                }
+            });
+        } else {
+            window.location.href = "{% url 'note_list' %}"; // Если контент пустой, просто перенаправляем на список заметок
+        }
+    }
+
+    function cancelNote() {
+        window.location.href = "{% url 'note_list' %}";
+    }
+</script>
+</body>
+</html>
